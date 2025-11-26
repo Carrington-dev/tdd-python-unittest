@@ -78,6 +78,49 @@ class TestShoppingCart(unittest.TestCase):
         self.cart.remove_item("grape")
         self.assertEqual(self.cart.view_cart(), [])
 
+    def test_total_cart_price(self):
+        self.cart.add_item("apple", 2)  # 2 * 1.0 = 2.0
+        self.cart.add_item("banana", 4) # 4 * 0.5 = 2.0
+        self.cart.add_item("orange", 1) # 1 * 1.5 = 1.5
+        total = self.cart.get_total()
+        self.assertEqual(total, 5.5)  # Total should be 2.0 + 2.0 + 1.5 = 5.5
+
+    def test_view_cart(self):
+        self.cart.add_item("apple", 1)
+        self.cart.add_item("banana", 2)
+        expected_view = [
+            {
+                'item': "apple",
+                'quantity': 1,
+                'price_per_unit': 1.0,
+                'total_price': 1.0
+            },
+            {
+                'item': "banana",
+                'quantity': 2,
+                'price_per_unit': 0.5,
+                'total_price': 1.0
+            }
+        ]
+        self.assertEqual(self.cart.view_cart(), expected_view)
+
+    def test_add_invalid_product(self):
+        self.cart.add_item("kiwi", 1)  # kiwi is not in the product catalog
+        self.assertEqual(self.cart.view_cart(), [])  # Cart should remain empty
+    
+    def test_remove_invalid_product(self):
+        self.cart.add_item("apple", 1)
+        self.cart.remove_item("kiwi")  # kiwi is not in the product catalog
+        expected_view = [
+            {
+                'item': "apple",
+                'quantity': 1,
+                'price_per_unit': 1.0,
+                'total_price': 1.0
+            }
+        ]
+        self.assertEqual(self.cart.view_cart(), expected_view)  # Cart should remain unchanged
+
 class TestShoppingCartLogging(unittest.TestCase):
     def setUp(self):
         # Initialize a new ShoppingCart instance before each test
