@@ -53,8 +53,12 @@ class ShoppingCart:
         else:
             logger.info(f"Product does not exist in catalog.")   
 
-    def get_total(self):
+    def get_total_price(self):
         total = sum(item["quantity"] * item["product"].price for item in self._items.values())
+        return total
+
+    def get_total(self):
+        total = sum(item["quantity"] for item in self._items.values())
         return total
     
     def view_cart(self):

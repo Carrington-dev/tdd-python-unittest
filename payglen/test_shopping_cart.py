@@ -82,7 +82,7 @@ class TestShoppingCart(unittest.TestCase):
         self.cart.add_item("apple", 2)  # 2 * 1.0 = 2.0
         self.cart.add_item("banana", 4) # 4 * 0.5 = 2.0
         self.cart.add_item("orange", 1) # 1 * 1.5 = 1.5
-        total = self.cart.get_total()
+        total = self.cart.get_total_price()
         self.assertEqual(total, 5.5)  # Total should be 2.0 + 2.0 + 1.5 = 5.5
 
     def test_view_cart(self):
@@ -120,6 +120,22 @@ class TestShoppingCart(unittest.TestCase):
             }
         ]
         self.assertEqual(self.cart.view_cart(), expected_view)  # Cart should remain unchanged
+
+    def test_total_item_count(self):
+        self.cart.add_item("apple", 2)
+        self.cart.add_item("banana", 3)
+        total_items = self.cart.get_total()
+        self.assertEqual(total_items, 5)  # 2 apples + 3 bananas = 5 items
+
+    def test_total_item_count_empty_cart(self):
+        total_items = self.cart.get_total()
+        self.assertEqual(total_items, 0)  # Empty cart should have 0 items
+
+    def test_total_item_count_after_removals(self):
+        self.cart.add_item("orange", 4)
+        self.cart.remove_item("orange")
+        total_items = self.cart.get_total()
+        self.assertEqual(total_items, 3)  # 4 - 1 = 3 oranges left
 
 class TestShoppingCartLogging(unittest.TestCase):
     def setUp(self):
